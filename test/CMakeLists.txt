@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.25.1)
 
 project(projectum_test)
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/test/bin)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/test/bin)
 
 add_executable(test_main
 	test_main.cpp
