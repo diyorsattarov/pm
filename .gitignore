@@ -28,8 +28,7 @@
 # Visual Studio Code
 .vscode/
 
-# extern
-/extern
+# lib folder
 /lib
 
 #Make
