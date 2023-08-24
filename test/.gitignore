@@ -1,0 +1,30 @@
+# CMake build files
+/CMakeFiles
+/CMakeCache.txt
+/CMakeScripts
+/CMakeTmp
+/*.cmake
+/*.cmake.in
+/CMakeLists.txt.user
+/*.dir/
+/CMakeCache/
+/CMakeDoxyfile.in
+/CMakeDownload/
+/CMakeExternals/
+/CMakeTmp/
+/CMakeTmp.dep
+/CMakeTmp.ver
+
+# Compiled output
+/bin/
+/build/
+
+# Generated files
+/*.vcxproj
+/*.vcxproj.filters
+/*.vcxproj.user
+/*.sln
+
+# Visual Studio Code
+.vscode/
+
