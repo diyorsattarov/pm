@@ -8,6 +8,12 @@ add_executable(test_main
 	test_main.cpp
 )
 
+# Link to Google Test
+target_link_libraries(test_main PRIVATE gtest)
+
+# Link to spdlog
+target_link_libraries(test_main PRIVATE spdlog::spdlog)
+
 add_custom_target(clean_test
     COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/test/bin
 

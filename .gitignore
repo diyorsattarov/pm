@@ -29,4 +29,8 @@
 .vscode/
 
 # extern
-/extern/
+/extern
+/lib
+
+#Make
+Makefile
