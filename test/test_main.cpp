@@ -1,122 +1,56 @@
 #include <gtest/gtest.h>
-#include <curl/curl.h>
 #include <string>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/basic_file_sink.h> // Include the file sink heade
 #include <nlohmann/json.hpp>
-					  // r
-class JSONPlaceholderFixture : public ::testing::Test {
+#include <boost/asio.hpp>
+#include <boost/beast.hpp>
+
+namespace asio = boost::asio;
+namespace beast = boost::beast;
+using tcp = asio::ip::tcp;
+
+class BaseJSONFixture : public ::testing::Test {
 protected:
-    CURL* curl;
     std::shared_ptr<spdlog::logger> logger;
-    std::string responseBuffer;  // Buffer to store the response data
 
-    JSONPlaceholderFixture() {
-        // Initialize cURL
-        curl_global_init(CURL_GLOBAL_ALL);
-        curl = curl_easy_init();
-
-        // Initialize the logger to write to a file
+    BaseJSONFixture() {
         logger = spdlog::basic_logger_mt("response_logger", "response.log");
         spdlog::set_default_logger(logger);
-
-        // Set up cURL options
-        if (curl) {
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
-        }
     }
 
-    ~JSONPlaceholderFixture() {
+    ~BaseJSONFixture() {
         spdlog::drop("response_logger");
-        // Cleanup cURL
-        if (curl) {
-            curl_easy_cleanup(curl);
-        }
-        curl_global_cleanup();
     }
 
-    static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
-        // This callback is called by cURL to write response data
-        JSONPlaceholderFixture* self = static_cast<JSONPlaceholderFixture*>(userp);
-        size_t totalSize = size * nmemb;
-        self->responseBuffer.append(static_cast<char*>(contents), totalSize);
-        return totalSize;
+    std::string PerformHttpRequest(const std::string& host, const std::string& target) {
+        asio::io_context io_context;
+        tcp::resolver resolver(io_context);
+        beast::tcp_stream stream(io_context);
+        auto const results = resolver.resolve(host, "http");
+        stream.connect(results);
+        beast::http::request<beast::http::string_body> req{beast::http::verb::get, target, 11};
+        req.set(beast::http::field::host, host);
+        req.set(beast::http::field::user_agent, "Beast");
+        beast::flat_buffer buffer;
+        beast::http::response<beast::http::string_body> res;
+        beast::http::write(stream, req);
+        beast::http::read(stream, buffer, res);
+        return res.body();
     }
 };
 
-// Define a test case using the fixture
-TEST_F(JSONPlaceholderFixture, FetchPosts) {
-    if (!curl) {
-        GTEST_SKIP();
-    }
 
-    // Set API URL
-    std::string apiUrl = "https://jsonplaceholder.typicode.com/posts/1";
-
-    // Set up cURL request
-    curl_easy_setopt(curl, CURLOPT_URL, apiUrl.c_str());
-
-    // Perform the request
-    CURLcode res = curl_easy_perform(curl);
-
-    // Check if request was successful
-    ASSERT_EQ(res, CURLE_OK);
-
-    // Write the response to the logger
-    spdlog::info("Response: {}", responseBuffer);
-}
-
-class JSONParsingFixture : public ::testing::Test {
+class JSONParsingFixture : public BaseJSONFixture {
 protected:
-    std::shared_ptr<spdlog::logger> logger;
-
-    JSONParsingFixture() {
-        // Initialize the logger to write to a file
-        logger = spdlog::basic_logger_mt("response_logger", "response.log");
-        spdlog::set_default_logger(logger);
-    }
-
-    ~JSONParsingFixture() {
-        // Cleanup
-        spdlog::drop("response_logger");
-    }
-
-    std::string PerformCurlRequest(const std::string& apiUrl) {
-        CURL* curl = curl_easy_init();
-        std::string response;
-
-        if (curl) {
-            curl_easy_setopt(curl, CURLOPT_URL, apiUrl.c_str());
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-
-            CURLcode res = curl_easy_perform(curl);
-            if (res != CURLE_OK) {
-                spdlog::error("Curl request failed: {}", curl_easy_strerror(res));
-            }
-
-            curl_easy_cleanup(curl);
-        }
-
-        return response;
-    }
-
-    static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
-        std::string* response = static_cast<std::string*>(userp);
-        size_t totalSize = size * nmemb;
-        response->append(static_cast<char*>(contents), totalSize);
-        return totalSize;
-    }
+    // You don't need to redefine the logger and PerformHttpRequest here
+    // since they are already available from the base class.
 };
 
 TEST_F(JSONParsingFixture, ParseAndLogJSON) {
-    std::string apiUrl = "https://jsonplaceholder.typicode.com/posts/1";
-
-    // Perform cURL request and get response
-    std::string response = PerformCurlRequest(apiUrl);
-
-    // Parse the JSON
+    std::string host = "jsonplaceholder.typicode.com";
+    std::string target = "/posts/1";
+    std::string response = PerformHttpRequest(host, target);
     nlohmann::json parsedJson;
     try {
         parsedJson = nlohmann::json::parse(response);
@@ -124,9 +58,30 @@ TEST_F(JSONParsingFixture, ParseAndLogJSON) {
         spdlog::error("JSON parsing error: {}", e.what());
         return;
     }
-
-    // Log the parsed JSON
     spdlog::info("Parsed JSON: {}", parsedJson.dump(4));  // Dump with 4-space indentation
+}
+
+class JSONErrorHandlingFixture : public BaseJSONFixture {
+protected:
+    // You can add more specific setup functions for this fixture
+    // if needed, or directly use the base class setup.
+
+    // Example of an error handling test
+    void ExpectErrorOnRequest(const std::string& host, const std::string& target) {
+        ASSERT_THROW({
+            try {
+                std::string response = PerformHttpRequest(host, target);
+            } catch (const std::exception& e) {
+                spdlog::info("Caught exception: {}", e.what());
+                throw;
+            }
+        }, std::exception);
+    }
+};
+
+// Test case for non-existent host
+TEST_F(JSONErrorHandlingFixture, RequestToNonExistentHost) {
+    ExpectErrorOnRequest("nonexistent-host.example.com", "/posts/1");
 }
 
 int main(int argc, char** argv) {

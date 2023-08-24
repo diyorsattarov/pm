@@ -10,7 +10,7 @@ add_executable(test_main
 
 find_package(nlohmann_json)
 
-target_link_libraries(test_main PRIVATE gtest spdlog libcurl nlohmann_json::nlohmann_json)
+target_link_libraries(test_main PRIVATE gtest spdlog nlohmann_json::nlohmann_json)
 
 add_custom_target(clean_test
     COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/test/bin

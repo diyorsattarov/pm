@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_subdirectory(extern/spdlog)
 add_subdirectory(extern/googletest)
-add_subdirectory(extern/curl)
 add_subdirectory(extern/json)
 add_subdirectory(test)
 
