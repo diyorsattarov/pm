@@ -5,7 +5,7 @@ project(projectum_test)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/test/bin)
 
 add_executable(test_main
-	test_main.cpp
+	test_beast.cpp
 )
 
 find_package(nlohmann_json)

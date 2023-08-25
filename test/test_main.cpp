@@ -10,16 +10,16 @@ namespace asio = boost::asio;
 namespace beast = boost::beast;
 using tcp = asio::ip::tcp;
 
-class BaseJSONFixture : public ::testing::Test {
+class BaseFixture : public ::testing::Test {
 protected:
     std::shared_ptr<spdlog::logger> logger;
 
-    BaseJSONFixture() {
+    BaseFixture() {
         logger = spdlog::basic_logger_mt("response_logger", "response.log");
         spdlog::set_default_logger(logger);
     }
 
-    ~BaseJSONFixture() {
+    ~BaseFixture() {
         spdlog::drop("response_logger");
     }
 
@@ -41,7 +41,7 @@ protected:
 };
 
 
-class JSONParsingFixture : public BaseJSONFixture {
+class JSONParsingFixture : public BaseFixture {
 protected:
     // You don't need to redefine the logger and PerformHttpRequest here
     // since they are already available from the base class.
@@ -61,7 +61,7 @@ TEST_F(JSONParsingFixture, ParseAndLogJSON) {
     spdlog::info("Parsed JSON: {}", parsedJson.dump(4));  // Dump with 4-space indentation
 }
 
-class JSONErrorHandlingFixture : public BaseJSONFixture {
+class JSONErrorHandlingFixture : public BaseFixture {
 protected:
     // You can add more specific setup functions for this fixture
     // if needed, or directly use the base class setup.
