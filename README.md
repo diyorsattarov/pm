@@ -1,33 +1,23 @@
-## To-Do List for Test Fixture Improvement
+              GLWTS(Good Luck With That Shit) Общественная Лицензия
+                      Copyright (c) Все блять, кроме Автора
 
-1. **Add More Test Cases**:
-   - [ ] Create test cases for different HTTP methods (e.g., POST, PUT, DELETE).
-   - [ ] Cover various HTTP response codes in your test cases.
-   - [ ] Test different API endpoints and data scenarios.
+Всем разрешается копировать, распространять, изменять, совмещать, продавать,
+публиковать, сублицензировать или творить любую другую хуйню с этим кодом
+на СВОЙ СТРАХ и РИСК.
 
-2. **Expand Error Handling**:
-   - [ ] Extend error handling tests to cover network errors, timeouts, and invalid responses.
+Автор абсолютно нихуя не понимает в предназначении данного кода.
+Он может сработать, а может и нет - автору не ебет.
 
-3. **Fixture Reuse**:
-   - [ ] Consider creating a base test fixture to consolidate common setup and teardown procedures.
 
-4. **Parameterized Tests**:
-   - [ ] Implement parameterized tests to run the same test with different input data.
+                    "УДАЧИ С ЭТОМ ДЕРЬМОМ" ОБЩЕСТВЕННАЯ ЛИЦЕНЗИЯ
+          УСЛОВИЯ И ПОЛОЖЕНИЯ ДЛЯ КОПИРОВАНИЯ, РАСПРОСТРАНЕНИЯ И ИЗМЕНЕНИЯ
 
-5. **Custom Matchers**:
-   - [ ] Create custom Google Test matchers for more readable and expressive assertions.
+  0. Делайте ЛЮБУЮ ХУЙНЮ, ВЗБРЕДУЩУЮ ВАМ В ГОЛОВУ до тех пор, пока ВЫ НЕ ОСТАВЛЯЕТЕ
+УЛИК ДЛЯ НАХОЖДЕНИЯ АВТОРА оригинального продукта, чтобы обвинить его или заставить
+взять на себя ответственность.
 
-6. **Mocking**:
-   - [ ] Explore Google Mock or other mocking frameworks to simulate external service interactions.
+НИ ПРИ КАКИХ ОБСТОЯТЕЛЬСТВАХ АВТОРЫ НЕ НЕСУТ ОТВЕТСТВЕННОСТИ ЗА ПРЕТЕНЗИИ,
+УБЫТКИ ИЛИ ДРУГИЕ ОТВЕТСТВЕННОСТИ, ПОДНЯТЫЕ ВО ВРЕМЯ КОНТРАКТА И ВЫЗВАННЫЕ
+ПРЯМОЙ ИЛИ КОСВЕННОЙ СВЯЗЬЮ С ПРОГРАММНЫМ ОБЕСПЕЧЕНИЕМ.
 
-7. **Test Performance**:
-   - [ ] Assess performance and scalability by testing with larger payloads and varying network conditions.
-
-8. **Test Documentation**:
-   - [ ] Add comments to test cases and fixtures to explain their purpose and scenarios.
-
-9. **Refactoring and Code Quality**:
-   - [ ] Periodically review and refactor test code for readability and maintainability.
-
-10. **Continuous Integration (CI)**:
-    - [ ] Integrate the test suite into your CI/CD pipeline for automated testing on code changes.
+Удачи, и храни тебя Господь.
